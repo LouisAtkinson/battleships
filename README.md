@@ -1,1 +1,1 @@
-# battleships
+Background photo by by Şiyar: https://www.pexels.com/photo/a-ferry-in-the-sea-during-the-golden-hour-13329440/

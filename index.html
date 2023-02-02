@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleships</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
+</head>
+<body>
+    <h1 id="header">Battleships</h1>
+
+    <div id="boards">
+        <div id="playerboard" class="board"></div>
+        <div id="computerboard" class="board"></div>
+    </div>
+
+    <button id="startbtn">Start</button>
+
+    <div class="popup" id="form-popup">
+        <form id="form">
+            <label for="p1name">Enter player's name:</label>
+            <input type="text" id="name" name="name" placeholder="Louis..."><br>
+            <input type="button" id="submitname" value="Done">
+        </form>    
+    </div>
+
+    <div class="popup" id="placeshipmenu">
+        <div id="shipname"></div>
+        <div id="menuboard" class="board"></div>
+    </div>
+
+    <footer>Copyright ©
+        <script>
+          document.write(new Date().getFullYear())
+        </script>
+        Louis Atkinson
+    </footer>
+</body>
+</html>

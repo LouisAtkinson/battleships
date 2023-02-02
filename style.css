@@ -1,0 +1,138 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden; 
+}
+
+html {
+    background-image: url(./sea.jpg);
+    background-position: 0% 40%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#boards {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.board {
+    height: 200px;
+    width: 200px;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    border-bottom: solid 1px black;
+    border-left: solid 1px black;
+    font-size: 0px;
+}
+
+.square {
+    background-color: transparent;
+    border-top: solid 1px black;
+    border-right: solid 1px black;
+}
+
+button, #submitname, .square {
+    cursor: pointer;
+}
+
+#startbtn {
+    font-size: 18px;
+    font-weight: 700;
+    color: black;
+    padding: 10px;
+    border-radius: 12px;
+    background-color: var(--button);
+    margin: 30px;
+    border: none;
+    box-shadow: 2px 2px 4px black;
+}
+
+button:hover, #submitname:hover {
+    background-color: var(--buttonhover);
+}
+
+#form-popup, #placeshipmenu {
+    display: none;
+    font-size: 20px;
+    width: 340px;
+    height: 130px;
+    background-color: transparent;
+    border: solid 2px var(--buttonhover);
+    border-radius: 10px;
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    margin-left: -170px;
+    padding-bottom: 30px;
+}
+
+#form {
+    display: flex;
+    flex-direction: column;;
+    align-items: center;
+}
+
+label[for=name] {
+    margin: 15px;
+}
+
+input[type=text] {
+    width: 70%;
+    padding: 5px;
+    margin: 5px 10px 0px 5px;
+    border: none;
+    background-color: #e5eaf5;
+    font-size: 16px;
+    color: black;
+}
+
+input[type=button] {
+    font-size: 14px;
+    font-weight: 700;
+    color: black;
+    width: 30%;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 10px;
+    background-color: var(--button);
+    border: none;
+    box-shadow: 2px 2px 4px black;
+}
+
+.occupied {
+    background-color: green;
+}
+
+.legal:hover {
+    background-color: green;
+}
+
+.illegal:hover, .occupied:hover {
+    background-color: red;
+}
+
+footer {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: transparent;
+}
