@@ -17,6 +17,18 @@ body {
     align-items: center;
 }
 
+#startbtn {
+    font-size: 18px;
+    font-weight: 700;
+    color: black;
+    padding: 10px;
+    border-radius: 12px;
+    background-color: var(--button);
+    margin: 30px;
+    border: none;
+    box-shadow: 2px 2px 4px black;
+}
+
 #boards {
     display: none;
     justify-content: center;
@@ -30,9 +42,12 @@ body {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
+    font-size: 0px;
+}
+
+#menuboard, #computerboard {
     border-bottom: solid 1px black;
     border-left: solid 1px black;
-    font-size: 0px;
 }
 
 .square {
@@ -45,29 +60,46 @@ button, #submitname, .square {
     cursor: pointer;
 }
 
-#startbtn {
-    font-size: 18px;
-    font-weight: 700;
-    color: black;
-    padding: 10px;
-    border-radius: 12px;
-    background-color: var(--button);
-    margin: 30px;
-    border: none;
-    box-shadow: 2px 2px 4px black;
+#playerboard .square {
+    cursor: auto;
+}
+
+#playerboardcontainer, #compboardcontainer, #gamedisplay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#gamedisplay {
+    margin: 20px;
+}
+
+#turn {
+    font-weight: 500;
 }
 
 button:hover, #submitname:hover {
     background-color: var(--buttonhover);
 }
 
-#form-popup, #placeshipmenu {
+#placeshipmenu {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    background-color: transparent;
+}
+
+#form-popup {
     display: none;
     font-size: 20px;
     width: 340px;
     height: 130px;
     background-color: transparent;
-    border: solid 2px var(--buttonhover);
     border-radius: 10px;
     position: fixed;
     top: 10%;
@@ -117,8 +149,24 @@ input[type=button] {
     background-color: green;
 }
 
-.illegal:hover, .occupied:hover {
+.illegal:hover {
     background-color: red;
+}
+
+.compSquare {
+    background-color: transparent;
+}
+
+.compSquare:hover {
+    background-color: rgba(219, 62, 0, 0.856);
+}
+
+.hit, .hit:hover {
+    background-color: red;
+}
+
+.missed, .missed:hover {
+    background-color: rgb(255, 255, 0);
 }
 
 footer {

@@ -11,16 +11,11 @@
 <body>
     <h1 id="header">Battleships</h1>
 
-    <div id="boards">
-        <div id="playerboard" class="board"></div>
-        <div id="computerboard" class="board"></div>
-    </div>
-
     <button id="startbtn">Start</button>
 
     <div class="popup" id="form-popup">
         <form id="form">
-            <label for="p1name">Enter player's name:</label>
+            <label for="name">Enter player's name:</label>
             <input type="text" id="name" name="name" placeholder="Louis..."><br>
             <input type="button" id="submitname" value="Done">
         </form>    
@@ -29,6 +24,22 @@
     <div class="popup" id="placeshipmenu">
         <div id="shipname"></div>
         <div id="menuboard" class="board"></div>
+    </div>
+
+    <div id="boards">
+        <div id="playerboardcontainer">
+            <div id="playername">Player</div>
+            <div id="playerboard" class ="board"></div>
+        </div>
+        <div id="compboardcontainer">
+            <div id="computername">Computer</div>
+            <div id="computerboard" class="board"></div>
+        </div>
+    </div>
+
+    <div id="gamedisplay">
+        <div id="turn"></div>
+        <div id="result"></div>
     </div>
 
     <footer>Copyright ©

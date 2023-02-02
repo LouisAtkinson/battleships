@@ -1,41 +1,62 @@
+const boards = document.getElementById('boards');
 const playerBoard = document.getElementById('playerboard');
 const computerBoard = document.getElementById('computerboard');
 const menuBoard = document.getElementById('menuboard');
 const shipName = document.getElementById('shipname');
+const turnText = document.getElementById('turn');
+const result = document.getElementById('result');
 let player;
 let computer;
 let playerName;
 let shipLength;
+let legalNumber;
+let turn;
+let isHit = 0;
+let sunkMessage = 0;
+let sunkShip = 0;
+let gameOver = 0;
 let startSquares = [];
 let compStartSquares = [];
 
 const startBtn = document.getElementById('startbtn');
-startbtn.addEventListener('click', playerNameMenu);
+startbtn.addEventListener('click', function() {
+    startBtn.style.display = "none";
+    document.getElementById("form-popup").style.display = "block"; 
+});
 
 const submitNameBtn = document.getElementById("submitname");
-submitNameBtn.addEventListener('click', submitName);
+submitNameBtn.addEventListener('click', function() {
+    playerName = capitalise(document.getElementById("name").value);
+    document.getElementById("form-popup").style.display = "none";
+    placeShipMenu();
+});
 
-const ship = (length, hits, sunk, location) => {
+
+const ship = (name, length, hits, sunk, location) => {
+    const getName = () => name;
+
     const hit = ship => {
         ship.hits++;
-        console.log(ship.hits);
-        console.log(ship)
+        console.log(ship.getName + 'is hit');
+        isHit = 1;
     }
     const isSunk = ship => {
         if (ship.length === ship.hits) {
             ship.sunk = 'yes';
+            sunkShip = 1;
+            sunkMessage = ship.getName() + ' has sunk!';
         } else {
         }
     }
-    return {hit, isSunk, length, hits, sunk, location};
+    return {name, hit, isSunk, length, hits, sunk, location, getName};
 }
 
 const gameboard = (one, two, three, four, five) => {
-    const carrier = ship(5, 0, 'no', [one]);
-    const battleship = ship(4, 0, 'no', [two]);
-    const destroyer = ship(3, 0, 'no', [three]);
-    const submarine = ship(3, 0, 'no', [four]);
-    const patrolBoat = ship(2, 0, 'no', [five]);
+    const carrier = ship('carrier', 5, 0, 'no', [parseInt(one)]);
+    const battleship = ship('battleship', 4, 0, 'no', [parseInt(two)]);
+    const destroyer = ship('destroyer', 3, 0, 'no', [parseInt(three)]);
+    const submarine = ship('submarine', 3, 0, 'no', [parseInt(four)]);
+    const patrolBoat = ship('patrol boat', 2, 0, 'no', [parseInt(five)]);
 
     const placeShip = (ship) => {
         for (let i = 1; i < ship.length; i++) {
@@ -49,12 +70,14 @@ const gameboard = (one, two, three, four, five) => {
     placeShip(submarine);
     placeShip(patrolBoat);
 
-    const recieveAttack = (target) => {
-        for (let ship in player) {
-            for (let i = 0; i < player[ship].length; i++) {
-                if ('location' in player[ship]) {
-                    if (player[ship].location[i] === target) {
-                        player[ship].hit(player[ship]);
+    const recieveAttack = (who, target) => {
+        for (let ship in who) {
+            for (let i = 0; i < who[ship].length; i++) {
+                if ('location' in who[ship]) {
+                    if (who[ship].location[i] === target) {
+                        who[ship].hit(who[ship]);
+                        who[ship].isSunk(who[ship]);
+                        console.log(sunkShip);
                         return;
                     }
                 }
@@ -62,75 +85,65 @@ const gameboard = (one, two, three, four, five) => {
         }
     }
 
-    const allSunk = () => {
+    const allSunk = (who) => {
         let sunkShips = 0;
-        for (let ship in player) {
-            if ('sunk' in player[ship]) {
-                if (player[ship].sunk === 'yes') {
+        for (let ship in who) {
+            if ('sunk' in who[ship]) {
+                if (who[ship].sunk === 'yes') {
                     sunkShips++
                 }
             }
         }
         if (sunkShips === 5) {
-            console.log('sunk')
+            gameOver = 1;
+            endGame(who);
         }
     }
     return {carrier, battleship, destroyer, submarine, patrolBoat, recieveAttack, allSunk};
 }
 
-function playerNameMenu() {
-/*     clear();
-    display.style.display = "none"; */
-    startBtn.style.display = "none";
-/*     replay.style.display = "none";
-    changeNames.style.display = "none"; */
-    document.getElementById("form-popup").style.display = "block";
-}
-
-function submitName() {
-    playerName = capitalise(document.getElementById("name").value);
-    document.getElementById("form-popup").style.display = "none";
-    placeShipMenu();
-}
-
 function placeShipMenu() {
-    document.getElementById("placeshipmenu").style.display = "block";
-    createBoard(menuBoard, 'menuSquare');
+    document.getElementById("placeshipmenu").style.display = "flex";
+    createBoard(menuBoard, 'playerSquare');
     shipLength = 5;
-    placeShipDisplay('Carrier', 5);
+    placeShipDisplay('carrier', 5);
 }
 
 function placeShipDisplay(ship, length) {
-    shipName.innerText = ship;
-    let menuSquares = document.querySelectorAll('.menuSquare');
-    let menuSquareArray = Array.prototype.slice.call(menuSquares);
+    shipName.innerText = 'Place your ' + ship;
+    let playerSquares = document.querySelectorAll('.playerSquare');
+    let playerSquareArray = Array.prototype.slice.call(playerSquares);
     for (let i = 0; i < 100; i++) {
-        menuSquareArray[i].outerHTML
-        menuSquareArray[i].innerHTML = i + 1;
-        menuSquareArray[i].classList.remove('legal');
-        menuSquareArray[i].classList.remove('illegal');
-        if ((i < (11 - length) || (i % 10) < (11 - length)) && !menuSquareArray[i].classList.contains('occupied') && !menuSquareArray[i + shipLength - 1].classList.contains('occupied')) {
-            menuSquareArray[i].classList.add('legal');
-            menuSquareArray[i].addEventListener('click', function showShip(event) {;
+        playerSquareArray[i].innerHTML = i + 1;
+        playerSquareArray[i].classList.remove('legal');
+        if ((i < (11 - length) || (i % 10) < (11 - length)) && !playerSquareArray[i].classList.contains('occupied') && !playerSquareArray[i + shipLength - 1].classList.contains('occupied')) {
+            playerSquareArray[i].classList.add('legal');
+            playerSquareArray[i].addEventListener('click', function showShip(event) {;
                 let targetSquare = event.target;
-                if (!startSquares.includes(targetSquare.innerHTML) && !menuSquareArray[i].classList.contains('occupied') && !menuSquareArray[i + shipLength - 1].classList.contains('occupied')) {
+                if (!startSquares.includes(targetSquare.innerHTML) && !playerSquareArray[i].classList.contains('occupied') && !playerSquareArray[i + shipLength - 1].classList.contains('occupied')) {
                     startSquares.push(targetSquare.innerHTML);
-                    console.log(startSquares.length)
-                    targetSquare.classList.add('occupied');
+                    targetSquare.classList.add('occupied')
+                    targetSquare.classList.add('illegal');
                     for (let i = 1; i < shipLength; i++) {
                         targetSquare = targetSquare.nextSibling;
-                        console.log(startSquares.length)
-                        targetSquare.classList.add('occupied');
+                        targetSquare.classList.add('occupied')
+                        targetSquare.classList.add('illegal');
                     }
                     for (let i = 0; i < 100; i++) {
-                        menuSquareArray[i].removeEventListener('click', showShip);
+                        playerSquareArray[i].removeEventListener('click', showShip);
+                    }
+                    if (startSquares.length === 5) {
+                        for (let i = 0; i <100 ; i++) {
+                            playerSquareArray[i].classList.remove('legal');
+                            playerSquareArray[i].classList.remove('illegal');
+                        }
                     }
                     nextShip();
                 }
             })
         } else {
-            menuSquareArray[i].classList.add('illegal');
-            menuSquareArray[i].addEventListener('click', function (event) {
+            playerSquareArray[i].classList.add('illegal');
+            playerSquareArray[i].addEventListener('click', function (event) {
                 console.log('no' + event.target.innerHTML);
             })
         }
@@ -140,30 +153,120 @@ function placeShipDisplay(ship, length) {
 function nextShip() {
     if (startSquares.length === 1) {
         shipLength = 4;
-        placeShipDisplay('Battleship', 4);
+        placeShipDisplay('battleship', 4);
     } else if (startSquares.length === 2) {
         shipLength = 3;
-        placeShipDisplay('Destroyer', 3);
+        placeShipDisplay('destroyer', 3);
     } else if (startSquares.length === 3) {
-        placeShipDisplay('Submarine', 3);
+        placeShipDisplay('submarine', 3);
     } else if (startSquares.length === 4) {
         shipLength = 2;
-        placeShipDisplay('Patrol boat', 2);
+        placeShipDisplay('patrol boat', 2);
     } else {
+        playerBoardReady = menuBoard.cloneNode(true);
+        playerBoard.appendChild(playerBoardReady);
         document.getElementById("placeshipmenu").style.display = "none";
         menuBoard.innerHTML = '';
-        startGame();
+        createBoard(computerBoard, 'compSquare');
+        shipLength = 5;
+        computerLocation(5);
     }
 }
 
-function startGame() {
+function computerLocation(length) {
+    let compSquares = document.querySelectorAll('.compSquare');
+    let compSquareArray = Array.prototype.slice.call(compSquares);
+    for (let i = 0; i < 100; i++) {
+        compSquareArray[i].innerHTML = i + 1;
+        compSquareArray[i].classList.remove('legal');
+        if ((i < (11 - length) || (i % 10) < (11 - length)) && !compSquareArray[i].classList.contains('occupied') && !compSquareArray[i + shipLength - 1].classList.contains('occupied')) {
+            compSquareArray[i].classList.add('legal');
+            compSquareArray[i].addEventListener('click', function showShip(event) {;
+               
+            })
+        } else {
+            compSquareArray[i].classList.add('illegal');
+        }
+    }
+    computerRandom();
+    let targetSquare = compSquareArray[legalNumber];
+    if (!compStartSquares.includes(targetSquare.innerHTML)) {
+        compStartSquares.push(targetSquare.innerHTML);
+        targetSquare.classList.add('occupied')
+        targetSquare.classList.add('illegal');
+        for (let i = 1; i < shipLength; i++) {
+            targetSquare = targetSquare.nextSibling;
+            targetSquare.classList.add('occupied')
+            targetSquare.classList.add('illegal');
+        }
+        if (compStartSquares.length === 5) {
+            for (let i = 0; i <100 ; i++) {
+                compSquareArray[i].classList.remove('legal');
+                compSquareArray[i].classList.remove('illegal');
+            }
+        }
+        compNextShip();
+    }
+}
+
+function computerRandom() {
+    let randomNumber = getRandomIntInclusive(0, 99);
+    let compSquares = document.querySelectorAll('.compSquare');
+    let compSquareArray = Array.prototype.slice.call(compSquares);
+    if (compSquareArray[randomNumber].classList.contains('illegal')) {
+        computerRandom();
+    } else {
+        legalNumber = randomNumber;
+    }
+}
+
+function computerRandomAttack() {
+    let randomNumber = getRandomIntInclusive(0, 99);
+    let playerSquares = document.querySelectorAll('.playerSquare');
+    let playerSquareArray = Array.prototype.slice.call(playerSquares);
+    if (playerSquareArray[randomNumber].classList.contains('hit') || playerSquareArray[randomNumber].classList.contains('missed')) {
+        computerRandomAttack();
+    } else {
+        legalNumber = randomNumber;
+    }
+}
+
+function compNextShip() {
+    if (compStartSquares.length === 1) {
+        shipLength = 4;
+        computerLocation(4);
+    } else if (compStartSquares.length === 2) {
+        shipLength = 3;
+        computerLocation(3);
+    } else if (compStartSquares.length === 3) {
+        computerLocation(3);
+    } else if (compStartSquares.length === 4) {
+        shipLength = 2;
+        computerLocation(5);
+    } else {
+        boards.style.display = 'flex';
+        startGame(startSquares, compStartSquares);
+    }
+}
+
+function startGame(startSquares, compStartSquares) {
     player = gameboard(startSquares[0], startSquares[1], startSquares[2], startSquares[3], startSquares[4]);
-
+    computer = gameboard(compStartSquares[0], compStartSquares[1], compStartSquares[2], compStartSquares[3], compStartSquares[4]);
+    turn = 'player';
+    turnText.innerHTML = "It is your turn"
+    if (playerName === '') {
+        document.getElementById('playername').innerHTML = 'Player';
+    } else {
+        document.getElementById('playername').innerHTML = capitalise(playerName);
+    } playGame();
 }
 
-function computerLocation() {
-    let carrierLocation = Math
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min)
 }
+
 function createBoard(board, typeSquare) {
     for (let i = 1; i < 101; i++) {
         let square = document.createElement('div');
@@ -178,5 +281,72 @@ function capitalise(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-createBoard(playerBoard, 'p');
-createBoard(computerBoard, 'c');
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function playGame() {
+    let compSquares = document.querySelectorAll('.compSquare');
+    let compSquareArray = Array.prototype.slice.call(compSquares);
+    for (let i = 0; i < 100; i++) {
+        compSquareArray[i].addEventListener('click', function() {
+            if (turn === 'player' && !compSquareArray[i].classList.contains('hit') && !compSquareArray[i].classList.contains('missed')) {
+                let targetSquare = compSquareArray[i].innerHTML;
+                computer.recieveAttack(computer, parseInt(targetSquare));
+                if (isHit === 1) {
+                    compSquareArray[i].classList.add('hit');
+                    result.innerHTML = 'You got a hit!';
+                    isHit = 0;
+                    if (sunkShip === 1) {
+                        result.innerHTML = "The computer's " + sunkMessage;
+                        sunkShip = 0;
+                        computer.allSunk(computer);
+                        if (gameOver === 1) {
+                            return;
+                        }                   
+                    }
+                } else {
+                    compSquareArray[i].classList.add('missed');
+                    result.innerHTML = 'You missed'
+                } turn = 'computer';
+                turnText.innerHTML = "It is the computer's turn";
+                sleep(2000).then(() => { 
+                    let playerSquares = document.querySelectorAll('.playerSquare');
+                let playerSquareArray = Array.prototype.slice.call(playerSquares);
+                computerRandomAttack();
+                targetSquare = playerSquareArray[legalNumber].innerHTML;
+                player.recieveAttack(player, parseInt(targetSquare));
+                    if (isHit === 1) {
+                        playerSquareArray[legalNumber].classList.add('hit');
+                        result.innerHTML = 'The computer hit!';
+                        isHit = 0
+                        if (sunkShip === 1) {
+                            result.innerHTML = "Your " + sunkMessage;
+                            sunkShip = 0;
+                            player.allSunk(player);
+                            if (gameOver === 1) {
+                                return;
+                            }
+                        }
+                    } else {
+                        playerSquareArray[legalNumber].classList.add('missed');
+                        result.innerHTML = 'The computer missed'
+                    }
+                turn = 'player';
+                turnText.innerHTML = "It is your turn";
+                });
+                
+            }
+        })
+    }
+}
+
+function endGame(loser) {
+    turn = '';
+    turnText.innerHTML = '';
+    if (loser === player) {
+        result.innerHTML = 'Oh no, you lost!';
+    } else {
+        result.innerHTML = 'Congratulations! You won.'
+    }
+}
