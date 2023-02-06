@@ -31,6 +31,24 @@ submitNameBtn.addEventListener('click', function() {
     placeShipMenu();
 });
 
+const replayBtn = document.getElementById('replaybtn');
+replaybtn.addEventListener('click', function() {
+    boards.style.display = 'none';
+    playerBoard.innerHTML = '';
+    computerBoard.innerHTML = '';
+    turnText.innerHTML = '';
+    result.innerHTML = '';
+    replayBtn.style.display = 'none';
+    player = '';
+    computer = '';
+    isHit = 0;
+    sunkMessage = 0;
+    sunkShip = 0;
+    gameOver = 0;
+    startSquares = [];
+    compStartSquares = [];
+    placeShipMenu(); 
+});
 
 const ship = (name, length, hits, sunk, location) => {
     const getName = () => name;
@@ -348,5 +366,5 @@ function endGame(loser) {
         result.innerHTML = 'Oh no, you lost!';
     } else {
         result.innerHTML = 'Congratulations! You won.'
-    }
+    } replayBtn.style.display = 'block';
 }

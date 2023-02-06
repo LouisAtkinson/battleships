@@ -17,7 +17,7 @@ body {
     align-items: center;
 }
 
-#startbtn {
+#startbtn, #replaybtn {
     font-size: 18px;
     font-weight: 700;
     color: black;
@@ -27,6 +27,11 @@ body {
     margin: 30px;
     border: none;
     box-shadow: 2px 2px 4px black;
+}
+
+#replaybtn {
+    margin: 10px;
+    display: none;
 }
 
 #boards {
@@ -80,8 +85,8 @@ button, #submitname, .square {
     font-weight: 500;
 }
 
-button:hover, #submitname:hover {
-    background-color: var(--buttonhover);
+#startbtn:hover, #replaybtn:hover, #submitname:hover {
+    background-color: rgb(230, 61, 0);
 }
 
 #placeshipmenu {
