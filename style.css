@@ -168,7 +168,7 @@ input[type=button] {
     background-color: green;
 }
 
-.illegal:hover {
+.illegal:hover, .illegal.legal:hover {
     background-color: red;
 }
 

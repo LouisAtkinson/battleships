@@ -134,7 +134,8 @@ function placeShipDisplay(ship, length) {
     for (let i = 0; i < 100; i++) {
         playerSquareArray[i].innerHTML = i + 1;
         playerSquareArray[i].classList.remove('legal');
-        if ((i < (11 - length) || (i % 10) < (11 - length)) && !playerSquareArray[i].classList.contains('occupied') && !playerSquareArray[i + shipLength - 1].classList.contains('occupied')) {
+        playerSquareArray[i].classList.remove('illegal');
+        if ((i < (11 - shipLength) || (i % 10) < (11 - shipLength)) && !playerSquareArray[i].classList.contains('occupied') && !playerSquareArray[i + shipLength - 1].classList.contains('occupied')) {
             playerSquareArray[i].classList.add('legal');
             playerSquareArray[i].addEventListener('click', function showShip(event) {;
                 let targetSquare = event.target;
@@ -160,6 +161,7 @@ function placeShipDisplay(ship, length) {
                 }
             })
         } else {
+            console.log(playerSquareArray[i]);
             playerSquareArray[i].classList.add('illegal');
             playerSquareArray[i].addEventListener('click', function (event) {
                 console.log('no' + event.target.innerHTML);
